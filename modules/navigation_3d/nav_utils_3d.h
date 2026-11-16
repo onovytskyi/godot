@@ -30,6 +30,7 @@
 
 #pragma once
 
+#include "core/math/aabb.h"
 #include "core/math/vector3.h"
 #include "core/templates/hashfuncs.h"
 #include "core/templates/local_vector.h"
@@ -104,6 +105,14 @@ struct Polygon {
 	LocalVector<Vector3> vertices;
 
 	real_t surface_area = 0.0;
+
+	/// Bounds of `vertices`, so point queries can skip polygons that cannot be closer than the best so far.
+	AABB bounds;
+
+	/// Squared distance from `p_point` to `bounds`: no point on the polygon is nearer than this.
+	_FORCE_INLINE_ real_t bounds_distance_squared_to(const Vector3 &p_point) const {
+		return p_point.clamp(bounds.position, bounds.position + bounds.size).distance_squared_to(p_point);
+	}
 };
 
 struct NavigationPoly {

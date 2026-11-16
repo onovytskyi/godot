@@ -252,6 +252,12 @@ void NavMeshQueries3D::_query_task_find_start_end_positions(NavMeshPathQueryTask
 				continue;
 			}
 
+			// No face of this polygon can beat the best begin or end found so far.
+			if (p.bounds_distance_squared_to(p_query_task.start_position) >= begin_d * begin_d &&
+					p.bounds_distance_squared_to(p_query_task.target_position) >= end_d * end_d) {
+				continue;
+			}
+
 			// For each face check the distance between the origin/destination.
 			for (uint32_t point_id = 2; point_id < p.vertices.size(); point_id++) {
 				const Face3 face(p.vertices[0], p.vertices[point_id - 1], p.vertices[point_id]);
@@ -965,6 +971,9 @@ ClosestPointQueryResult NavMeshQueries3D::map_iteration_get_closest_point_info(c
 	const LocalVector<Ref<NavRegionIteration3D>> &regions = p_map_iteration.region_iterations;
 	for (const Ref<NavRegionIteration3D> &region : regions) {
 		for (const Polygon &polygon : region->get_navmesh_polygons()) {
+			if (polygon.bounds_distance_squared_to(p_point) >= closest_point_distance_squared) {
+				continue; // No point on it can be closer than the best so far.
+			}
 			Vector3 plane_normal = (polygon.vertices[1] - polygon.vertices[0]).cross(polygon.vertices[2] - polygon.vertices[0]);
 			Vector3 closest_on_polygon;
 			real_t closest = FLT_MAX;
@@ -1172,6 +1181,9 @@ ClosestPointQueryResult NavMeshQueries3D::polygons_get_closest_point_info(const 
 	real_t closest_point_distance_squared = FLT_MAX;
 
 	for (const Polygon &polygon : p_polygons) {
+		if (polygon.bounds_distance_squared_to(p_point) >= closest_point_distance_squared) {
+			continue; // No point on it can be closer than the best so far.
+		}
 		Vector3 plane_normal = (polygon.vertices[1] - polygon.vertices[0]).cross(polygon.vertices[2] - polygon.vertices[0]);
 		Vector3 closest_on_polygon;
 		real_t closest = FLT_MAX;

@@ -124,6 +124,11 @@ void NavRegionBuilder3D::_build_step_process_navmesh_data(NavRegionIterationBuil
 
 			const Vector3 point_position = region_transform.xform(vertices_ptr[vertex_index]);
 			polygon.vertices[j] = point_position;
+			if (j == 0) {
+				polygon.bounds = AABB(point_position, Vector3());
+			} else {
+				polygon.bounds.expand_to(point_position);
+			}
 
 			if (first_vertex) {
 				first_vertex = false;
