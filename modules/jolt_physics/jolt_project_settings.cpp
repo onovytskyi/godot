@@ -49,6 +49,8 @@ void JoltProjectSettings::register_settings() {
 	GLOBAL_DEF(PropertyInfo(Variant::FLOAT, "physics/jolt_physics_3d/simulation/continuous_cd_movement_threshold", PROPERTY_HINT_RANGE, U"0,1,0.01"), 0.75f);
 	GLOBAL_DEF(PropertyInfo(Variant::FLOAT, "physics/jolt_physics_3d/simulation/continuous_cd_max_penetration", PROPERTY_HINT_RANGE, U"0,1,0.01"), 0.25f);
 	GLOBAL_DEF(PropertyInfo(Variant::BOOL, "physics/jolt_physics_3d/simulation/body_pair_contact_cache_enabled"), true);
+	GLOBAL_DEF(PropertyInfo(Variant::INT, "physics/jolt_physics_3d/simulation/max_threads", PROPERTY_HINT_RANGE, U"0,64,or_greater"), 0);
+	GLOBAL_DEF(PropertyInfo(Variant::INT, "physics/jolt_physics_3d/simulation/active_bodies_per_thread", PROPERTY_HINT_RANGE, U"0,1024,or_greater"), 32);
 	GLOBAL_DEF(PropertyInfo(Variant::FLOAT, "physics/jolt_physics_3d/simulation/body_pair_contact_cache_distance_threshold", PROPERTY_HINT_RANGE, U"0,0.01,0.00001,or_greater,suffix:m"), 0.001f);
 	GLOBAL_DEF(PropertyInfo(Variant::FLOAT, "physics/jolt_physics_3d/simulation/body_pair_contact_cache_angle_threshold", PROPERTY_HINT_RANGE, U"0,180,0.01,radians_as_degrees"), Math::deg_to_rad(2.0f));
 
@@ -93,6 +95,8 @@ void JoltProjectSettings::read_settings() {
 	ccd_movement_threshold = GLOBAL_GET("physics/jolt_physics_3d/simulation/continuous_cd_movement_threshold");
 	ccd_max_penetration = GLOBAL_GET("physics/jolt_physics_3d/simulation/continuous_cd_max_penetration");
 	body_pair_contact_cache_enabled = GLOBAL_GET("physics/jolt_physics_3d/simulation/body_pair_contact_cache_enabled");
+	max_threads = GLOBAL_GET("physics/jolt_physics_3d/simulation/max_threads");
+	active_bodies_per_thread = GLOBAL_GET("physics/jolt_physics_3d/simulation/active_bodies_per_thread");
 	float body_pair_cache_distance = GLOBAL_GET("physics/jolt_physics_3d/simulation/body_pair_contact_cache_distance_threshold");
 	body_pair_cache_distance_sq = body_pair_cache_distance * body_pair_cache_distance;
 	float body_pair_cache_angle = GLOBAL_GET("physics/jolt_physics_3d/simulation/body_pair_contact_cache_angle_threshold");

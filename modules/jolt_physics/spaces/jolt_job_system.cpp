@@ -30,6 +30,8 @@
 
 #include "jolt_job_system.h"
 
+#include "../jolt_project_settings.h"
+
 #include "core/debugger/engine_debugger.h"
 #include "core/object/worker_thread_pool.h"
 #include "core/os/os.h"
@@ -106,7 +108,17 @@ void JoltJobSystem::Job::queue() {
 }
 
 int JoltJobSystem::GetMaxConcurrency() const {
-	return thread_count;
+	return concurrency;
+}
+
+void JoltJobSystem::set_concurrency_for(uint32_t p_active_bodies) {
+	const int limit = JoltProjectSettings::max_threads > 0 ? MIN(JoltProjectSettings::max_threads, thread_count) : thread_count;
+	const int per_thread = JoltProjectSettings::active_bodies_per_thread;
+	if (per_thread <= 0) {
+		concurrency = limit;
+		return;
+	}
+	concurrency = CLAMP(int((p_active_bodies + per_thread - 1) / per_thread), 1, limit);
 }
 
 JPH::JobHandle JoltJobSystem::CreateJob(const char *p_name, JPH::ColorArg p_color, const JPH::JobSystem::JobFunction &p_job_function, JPH::uint32 p_dependency_count) {
@@ -159,7 +171,8 @@ void JoltJobSystem::_reclaim_jobs() {
 
 JoltJobSystem::JoltJobSystem() :
 		JPH::JobSystemWithBarrier(JPH::cMaxPhysicsBarriers),
-		thread_count(MAX(1, WorkerThreadPool::get_singleton()->get_thread_count())) {
+		thread_count(MAX(1, WorkerThreadPool::get_singleton()->get_thread_count())),
+		concurrency(thread_count) {
 	jobs.Init(JPH::cMaxPhysicsJobs, JPH::cMaxPhysicsJobs);
 }
 

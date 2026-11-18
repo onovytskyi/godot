@@ -221,6 +221,10 @@ void JoltSpace3D::step(float p_step) {
 	stepping = false;
 }
 
+uint32_t JoltSpace3D::get_active_body_count() const {
+	return physics_system->GetNumActiveBodies(JPH::EBodyType::RigidBody) + physics_system->GetNumActiveBodies(JPH::EBodyType::SoftBody);
+}
+
 void JoltSpace3D::call_queries() {
 	while (body_call_queries_list.first()) {
 		JoltBody3D *body = body_call_queries_list.first()->self();

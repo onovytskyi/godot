@@ -2769,6 +2769,10 @@
 			[b]Note:[/b] This affects methods [method PhysicsDirectSpaceState3D.cast_motion], [method PhysicsDirectSpaceState3D.collide_shape], [method PhysicsDirectSpaceState3D.get_rest_info] and [method PhysicsDirectSpaceState3D.intersect_shape].
 			[b]Note:[/b] Enabling this setting can cause certain shapes to be culled from the results entirely, but you will get at least one intersection per body.
 		</member>
+		<member name="physics/jolt_physics_3d/simulation/active_bodies_per_thread" type="int" setter="" getter="" default="32">
+			How many awake bodies each thread of a simulation step takes on. Before each step, the step's jobs are spread over one thread per this many awake bodies (rounded up), at least one and at most [member physics/jolt_physics_3d/simulation/max_threads]. A step with little to do then runs on few threads, where fanning it out to every thread of the [WorkerThreadPool] would cost more in scheduling than the work itself.
+			If [code]0[/code], every step uses [member physics/jolt_physics_3d/simulation/max_threads] threads.
+		</member>
 		<member name="physics/jolt_physics_3d/simulation/allow_sleep" type="bool" setter="" getter="" default="true">
 			If [code]true[/code], [RigidBody3D] nodes are allowed to go to sleep if their velocity is below the threshold defined in [member physics/jolt_physics_3d/simulation/sleep_velocity_threshold] for the duration set in [member physics/jolt_physics_3d/simulation/sleep_time_threshold]. This can improve physics simulation performance when there are non-moving [RigidBody3D] nodes, at the cost of some nodes possibly failing to wake up in certain scenarios. Consider disabling this temporarily to troubleshoot [RigidBody3D] nodes not moving when they should.
 		</member>
@@ -2797,6 +2801,9 @@
 		<member name="physics/jolt_physics_3d/simulation/generate_all_kinematic_contacts" type="bool" setter="" getter="" default="false">
 			If [code]true[/code], a [RigidBody3D] frozen with [constant RigidBody3D.FREEZE_MODE_KINEMATIC] is able to collide with other kinematic and static bodies, and therefore generate contacts for them.
 			[b]Note:[/b] This setting can come at a heavy CPU and memory cost if you allow many/large frozen kinematic bodies with a non-zero [member RigidBody3D.max_contacts_reported] to overlap with complex static geometry, such as [ConcavePolygonShape3D] or [HeightMapShape3D].
+		</member>
+		<member name="physics/jolt_physics_3d/simulation/max_threads" type="int" setter="" getter="" default="0">
+			The most threads of the [WorkerThreadPool] a simulation step may use. If [code]0[/code], it may use all of them. See also [member physics/jolt_physics_3d/simulation/active_bodies_per_thread].
 		</member>
 		<member name="physics/jolt_physics_3d/simulation/penetration_slop" type="float" setter="" getter="" default="0.02">
 			How much bodies are allowed to penetrate each other, in meters.

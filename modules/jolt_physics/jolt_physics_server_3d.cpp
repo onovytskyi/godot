@@ -1626,6 +1626,7 @@ void JoltPhysicsServer3D::step(real_t p_step) {
 	}
 
 	for (JoltSpace3D *active_space : active_spaces) {
+		job_system->set_concurrency_for(active_space->get_active_body_count());
 		job_system->pre_step();
 
 		active_space->step((float)p_step);

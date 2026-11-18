@@ -91,6 +91,7 @@ public:
 	~JoltSpace3D();
 
 	void step(float p_step);
+	uint32_t get_active_body_count() const;
 
 	void call_queries();
 

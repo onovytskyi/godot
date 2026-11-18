@@ -80,7 +80,8 @@ class JoltJobSystem final : public JPH::JobSystemWithBarrier {
 
 	JPH::FixedSizeFreeList<Job> jobs;
 
-	int thread_count = 0;
+	int thread_count = 0; // The worker pool's threads.
+	int concurrency = 0; // How many of them a step may use.
 
 	virtual int GetMaxConcurrency() const override;
 
@@ -93,6 +94,11 @@ class JoltJobSystem final : public JPH::JobSystemWithBarrier {
 
 public:
 	JoltJobSystem();
+
+	// Sizes the next step's jobs for `p_active_bodies` awake bodies (see the `max_threads` and
+	// `active_bodies_per_thread` settings): fanning a step with little work out to every worker
+	// costs more in scheduling and waiting than the work itself.
+	void set_concurrency_for(uint32_t p_active_bodies);
 
 	void pre_step();
 	void post_step();
